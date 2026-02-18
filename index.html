@@ -8,10 +8,10 @@
     />
     <meta
       name="description"
-      content="Efectivo — Control total de finanzas personales para Paraguay"
+      content="Efectivo — Control total de finanzas personales"
     />
     <meta name="theme-color" content="#0f172a" />
-    <title>💰 Efectivo</title>
+    <title>Efectivo</title>
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -978,7 +978,7 @@
   <body>
     <!-- Loading splash -->
     <div id="loading">
-      <div style="font-size: 3rem">💰</div>
+      <div style="font-size: 3rem"></div>
       <div id="loading-logo">EFECTIVO</div>
       <div class="spinner"></div>
     </div>
@@ -988,7 +988,7 @@
       <!-- Sidebar (desktop) -->
       <div id="sidebar-overlay"></div>
       <aside id="sidebar">
-        <div class="sidebar-logo">💰 Efectivo</div>
+        <div class="sidebar-logo">Efectivo</div>
         <nav id="sidebar-nav"></nav>
       </aside>
 
@@ -2845,8 +2845,19 @@
         const categoryId = document.getElementById("modal-cat")?.value;
         const subcategoryId = document.getElementById("modal-subcat")?.value;
         const note = document.getElementById("modal-note")?.value?.trim();
-        // ── Lógica Adelanto ──
-        if (categoryId === "cat_salario" && type === "income") {
+
+        if (!amount || amount <= 0) {
+          Utils.toast("Ingresa un monto válido", "error");
+          return;
+        }
+        if (!date) {
+          Utils.toast("Selecciona una fecha", "error");
+          return;
+        }
+
+        let finalNote = note;
+        // ── Lógica Adelanto (Solo en nuevas transacciones) ──
+        if (!id && categoryId === "cat_salario" && type === "income") {
           const advances = state.transactions.filter(
             (t) =>
               t.categoryId === "cat_adelanto" &&
@@ -2856,18 +2867,7 @@
           if (advances.length > 0) {
             const totalAdvance = Utils.sumBy(advances, (t) => t.amount);
             if (totalAdvance > 0) {
-              if (
-                confirm(
-                  `Tienes adelantos pendientes por ${Utils.fmtPYG(totalAdvance)}. ¿Descontar del salario?`,
-                )
-              ) {
-                if (amount <= totalAdvance) {
-                  Utils.toast(
-                    "El salario no cubre los adelantos pendientes",
-                    "error",
-                  );
-                  return;
-                }
+              if (amount > totalAdvance) {
                 // Registrar GASTO automático de "Devolución de Adelanto"
                 state.transactions.push({
                   id: Utils.uuid(),
@@ -2877,21 +2877,24 @@
                   categoryId: "cat_adelanto",
                   note: "Devolución automática de adelantos",
                 });
-                // Modificar nota del salario actual
-                // Nota: no podemos modificar 'note' directamente porque es const, pero podemos usar una let arriba o modificar el objeto antes de guardar.
-                // Como 'note' es const, crearemos una nueva variable para el objeto final.
+
+                finalNote += ` (Desc. adelantos: ${Utils.fmtPYG(totalAdvance)})`;
+
+                // Marcar adelantos como descontados
+                advances.forEach((t) => {
+                  t.note = (t.note || "") + " (Descontado)";
+                });
+              } else {
+                Utils.toast(
+                  "El salario no cubre los adelantos pendientes",
+                  "error",
+                );
+                return;
               }
             }
           }
         }
-        if (!amount || amount <= 0) {
-          Utils.toast("Ingresa un monto válido", "error");
-          return;
-        }
-        if (!date) {
-          Utils.toast("Selecciona una fecha", "error");
-          return;
-        }
+
         if (id) {
           const idx = state.transactions.findIndex((t) => t.id === id);
           if (idx > -1)
@@ -2902,7 +2905,7 @@
               date,
               categoryId,
               subcategoryId,
-              note,
+              note: finalNote,
             };
         } else {
           state.transactions.push({
@@ -2912,42 +2915,8 @@
             date,
             categoryId,
             subcategoryId,
-            categoryId,
-            subcategoryId,
-            note:
-              note +
-              (categoryId === "cat_salario" &&
-              type === "income" &&
-              state.transactions.some(
-                (t) =>
-                  t.categoryId === "cat_adelanto" &&
-                  t.date === date &&
-                  t.type === "expense" &&
-                  t.note === "Devolución automática de adelantos",
-              ) // Hack simple para detectar si acabamos de descontar
-                ? ` (Desc. adelantos)`
-                : ""),
+            note: finalNote,
           });
-          // Marcar adelantos como descontados si corresponde
-          if (categoryId === "cat_salario" && type === "income") {
-            const deduction = state.transactions.find(
-              (t) =>
-                t.date === date &&
-                t.note === "Devolución automática de adelantos",
-            );
-            if (deduction) {
-              state.transactions.forEach((t) => {
-                if (
-                  t.categoryId === "cat_adelanto" &&
-                  t.type === "income" &&
-                  !t.note?.includes("(Descontado)") &&
-                  t.date <= date
-                ) {
-                  t.note = (t.note || "") + " (Descontado)";
-                }
-              });
-            }
-          }
         }
         saveAll();
         closeModal();
