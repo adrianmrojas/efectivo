@@ -20,6 +20,11 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <!-- Iconos -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -288,6 +293,10 @@
         font-family: "Outfit", sans-serif;
         font-size: 13px;
         font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
         cursor: pointer;
         transition: all 0.15s;
         background: transparent;
@@ -381,6 +390,26 @@
         font-size: 18px;
         line-height: 1;
       }
+      .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        width: 1em;
+        height: 1em;
+      }
+      .icon-sm {
+        font-size: 0.9rem;
+      }
+      .icon-md {
+        font-size: 1rem;
+      }
+      .icon-lg {
+        font-size: 1.15rem;
+      }
+      .icon-xl {
+        font-size: 1.6rem;
+      }
 
       /* ── Sidebar desktop ── */
       #sidebar {
@@ -461,6 +490,15 @@
         }
         #hamburger {
           display: none !important;
+        }
+      }
+      @media (max-width: 767px) {
+        #sidebar,
+        #sidebar-overlay {
+          display: none !important;
+        }
+        #hamburger {
+          display: none;
         }
       }
 
@@ -1007,7 +1045,7 @@
             flex-shrink: 0;
           "
         >
-          ☰
+          <i class="fa-solid fa-bars icon"></i>
         </button>
         <div
           id="topbar-title"
@@ -1058,8 +1096,12 @@
     <!-- FAB (mobile) -->
     <button id="fab-btn">+</button>
     <div id="fab-menu">
-      <div class="fab-option" id="fab-income">💚 Agregar ingreso</div>
-      <div class="fab-option" id="fab-expense">❤️ Agregar gasto</div>
+      <div class="fab-option" id="fab-income">
+        <i class="fa-solid fa-arrow-up icon"></i> Agregar ingreso
+      </div>
+      <div class="fab-option" id="fab-expense">
+        <i class="fa-solid fa-arrow-down icon"></i> Agregar gasto
+      </div>
     </div>
 
     <!-- Modal -->
@@ -1607,12 +1649,32 @@
       let fabOpen = false;
 
       // ── Categorías por defecto ─────────────────────────────
+      const DEFAULT_CATEGORY_ICON = "box";
+      const CATEGORY_ICON_BY_ID = {
+        cat_salario: "briefcase",
+        cat_freelance: "laptop",
+        cat_inversiones: "chart-line",
+        cat_extra: "coins",
+        cat_alimentos: "cart-shopping",
+        cat_transporte: "bus",
+        cat_alquiler: "house",
+        cat_salud: "heart",
+        cat_servicios: "bolt",
+        cat_deudas: "credit-card",
+        cat_hormiga: "bug",
+        cat_educacion: "book",
+        cat_entretenimiento: "gamepad",
+        cat_ropa: "shirt",
+        cat_ahorro: "piggy-bank",
+        cat_otros: "box",
+        cat_adelanto: "money-bill-wave",
+      };
       const DEFAULT_CATEGORIES = [
         {
           id: "cat_salario",
           name: "Salario",
           type: "income",
-          emoji: "💼",
+          icon: CATEGORY_ICON_BY_ID.cat_salario,
           color: "#10b981",
           subcategories: [],
         },
@@ -1620,7 +1682,7 @@
           id: "cat_freelance",
           name: "Freelance",
           type: "income",
-          emoji: "💻",
+          icon: CATEGORY_ICON_BY_ID.cat_freelance,
           color: "#3b82f6",
           subcategories: [],
         },
@@ -1628,7 +1690,7 @@
           id: "cat_inversiones",
           name: "Inversiones",
           type: "income",
-          emoji: "📈",
+          icon: CATEGORY_ICON_BY_ID.cat_inversiones,
           color: "#8b5cf6",
           subcategories: [],
         },
@@ -1636,7 +1698,7 @@
           id: "cat_extra",
           name: "Ingresos Extra",
           type: "income",
-          emoji: "💰",
+          icon: CATEGORY_ICON_BY_ID.cat_extra,
           color: "#f59e0b",
           subcategories: [],
         },
@@ -1644,19 +1706,19 @@
           id: "cat_alimentos",
           name: "Alimentación",
           type: "expense",
-          emoji: "🛒",
+          icon: CATEGORY_ICON_BY_ID.cat_alimentos,
           color: "#f59e0b",
           subcategories: [
             { id: "sub_super", name: "Supermercado" },
             { id: "sub_rest", name: "Restaurantes" },
-            { id: "sub_cafe", name: "Café/Snacks" },
+            { id: "sub_cafe", name: "Caf?/Snacks" },
           ],
         },
         {
           id: "cat_transporte",
           name: "Transporte",
           type: "expense",
-          emoji: "🚌",
+          icon: CATEGORY_ICON_BY_ID.cat_transporte,
           color: "#06b6d4",
           subcategories: [
             { id: "sub_bus", name: "Bus/Taxi" },
@@ -1668,7 +1730,7 @@
           id: "cat_alquiler",
           name: "Alquiler/Vivienda",
           type: "expense",
-          emoji: "🏠",
+          icon: CATEGORY_ICON_BY_ID.cat_alquiler,
           color: "#ef4444",
           subcategories: [
             { id: "sub_alq", name: "Alquiler" },
@@ -1679,7 +1741,7 @@
           id: "cat_salud",
           name: "Salud",
           type: "expense",
-          emoji: "🏥",
+          icon: CATEGORY_ICON_BY_ID.cat_salud,
           color: "#ec4899",
           subcategories: [
             { id: "sub_med", name: "Medicamentos" },
@@ -1690,7 +1752,7 @@
           id: "cat_servicios",
           name: "Servicios",
           type: "expense",
-          emoji: "⚡",
+          icon: CATEGORY_ICON_BY_ID.cat_servicios,
           color: "#a78bfa",
           subcategories: [
             { id: "sub_luz", name: "Luz/Agua" },
@@ -1702,7 +1764,7 @@
           id: "cat_deudas",
           name: "Deudas/Préstamos",
           type: "expense",
-          emoji: "💳",
+          icon: CATEGORY_ICON_BY_ID.cat_deudas,
           color: "#f87171",
           subcategories: [
             { id: "sub_cuota", name: "Cuotas" },
@@ -1713,19 +1775,19 @@
           id: "cat_hormiga",
           name: "Gastos Hormiga",
           type: "expense",
-          emoji: "🐜",
+          icon: CATEGORY_ICON_BY_ID.cat_hormiga,
           color: "#fb923c",
           subcategories: [
-            { id: "sub_cafe2", name: "Café" },
+            { id: "sub_cafe2", name: "Caf?" },
             { id: "sub_ci", name: "Cigarrillos" },
-            { id: "sub_misc", name: "Misceláneos" },
+            { id: "sub_misc", name: "Miscel?neos" },
           ],
         },
         {
           id: "cat_educacion",
           name: "Educación",
           type: "expense",
-          emoji: "📚",
+          icon: CATEGORY_ICON_BY_ID.cat_educacion,
           color: "#34d399",
           subcategories: [],
         },
@@ -1733,7 +1795,7 @@
           id: "cat_entretenimiento",
           name: "Entretenimiento",
           type: "expense",
-          emoji: "🎮",
+          icon: CATEGORY_ICON_BY_ID.cat_entretenimiento,
           color: "#60a5fa",
           subcategories: [
             { id: "sub_stream", name: "Streaming" },
@@ -1744,7 +1806,7 @@
           id: "cat_ropa",
           name: "Ropa/Calzado",
           type: "expense",
-          emoji: "👕",
+          icon: CATEGORY_ICON_BY_ID.cat_ropa,
           color: "#c084fc",
           subcategories: [],
         },
@@ -1752,7 +1814,7 @@
           id: "cat_ahorro",
           name: "Ahorro",
           type: "expense",
-          emoji: "🐷",
+          icon: CATEGORY_ICON_BY_ID.cat_ahorro,
           color: "#10b981",
           subcategories: [],
         },
@@ -1760,7 +1822,7 @@
           id: "cat_otros",
           name: "Otros",
           type: "both",
-          emoji: "📦",
+          icon: CATEGORY_ICON_BY_ID.cat_otros,
           color: "#94a3b8",
           subcategories: [],
         },
@@ -1768,7 +1830,7 @@
           id: "cat_adelanto",
           name: "Adelanto de Salario",
           type: "income",
-          emoji: "💸",
+          icon: CATEGORY_ICON_BY_ID.cat_adelanto,
           color: "#ef4444",
           subcategories: [],
         },
@@ -2027,6 +2089,12 @@
       }
 
       // ── Persistencia ───────────────────────────────────────
+      function normalizeCategory(cat) {
+        if (!cat) return cat;
+        if (cat.icon) return cat;
+        const icon = CATEGORY_ICON_BY_ID[cat.id] || DEFAULT_CATEGORY_ICON;
+        return { ...cat, icon };
+      }
       function saveAll() {
         Utils.save("transactions", state.transactions);
         Utils.save("templates", state.templates);
@@ -2049,6 +2117,7 @@
           state.goals = Utils.load("goals", []);
           state.config = { ...state.config, ...Utils.load("config", {}) };
         }
+        state.categories = (state.categories || []).map(normalizeCategory);
       }
 
       // ── Tema ───────────────────────────────────────────────
@@ -2168,13 +2237,13 @@
 
       // ── Navegación ─────────────────────────────────────────
       const NAV_ITEMS = [
-        { id: "dashboard", emoji: "📊", label: "Inicio" },
-        { id: "transactions", emoji: "💸", label: "Movimientos" },
-        { id: "templates", emoji: "🔄", label: "Recurrentes" },
-        { id: "categories", emoji: "🏷️", label: "Categorías" },
-        { id: "goals", emoji: "🎯", label: "Metas" },
-        { id: "reports", emoji: "📈", label: "Reportes" },
-        { id: "settings", emoji: "⚙️", label: "Config" },
+        { id: "dashboard", icon: "chart-pie", label: "Inicio" },
+        { id: "transactions", icon: "list", label: "Movimientos" },
+        { id: "templates", icon: "repeat", label: "Recurrentes" },
+        { id: "categories", icon: "tags", label: "Categorías" },
+        { id: "goals", icon: "bullseye", label: "Metas" },
+        { id: "reports", icon: "chart-line", label: "Reportes" },
+        { id: "settings", icon: "gear", label: "Config" },
       ];
       const NAV_TITLES = {
         dashboard: "Dashboard",
@@ -2193,14 +2262,14 @@
           sidebarNav.innerHTML = NAV_ITEMS.map(
             (i) => `
     <button class="sidebar-nav-item" data-section="${i.id}" onclick="navigate('${i.id}')">
-      <span style="font-size:1.1rem">${i.emoji}</span> ${i.label}
+      ${icon(i.icon, "icon-sm")} ${i.label}
     </button>`,
           ).join("");
         if (mobileNav)
           mobileNav.innerHTML = NAV_ITEMS.map(
             (i) => `
     <button class="nav-item" data-section="${i.id}" onclick="navigate('${i.id}')">
-      <span class="nav-icon">${i.emoji}</span>
+      ${icon(i.icon, "nav-icon")}
       <span>${i.label}</span>
     </button>`,
           ).join("");
@@ -2249,6 +2318,7 @@
       }
 
       function openSidebar() {
+        if (window.innerWidth < 768) return;
         document.getElementById("sidebar").classList.add("open");
         document.getElementById("sidebar-overlay").classList.add("active");
         // Add temporary inline open style for mobile
@@ -2276,16 +2346,20 @@
       }
 
       // ── Helpers de render ──────────────────────────────────
+      function icon(name, className = "") {
+        const extra = className ? ` ${className}` : "";
+        return `<i class="fa-solid fa-${name} icon${extra}"></i>`;
+      }
       function renderTxItem(t, clickable = true) {
         const cat = state.categories.find((c) => c.id === t.categoryId) || {
-          emoji: "📦",
+          icon: DEFAULT_CATEGORY_ICON,
           name: "Sin categoría",
           color: "#94a3b8",
         };
         const isIncome = t.type === "income";
         return `
     <div class="tx-item" ${clickable ? `onclick="openTransactionModal('${t.id}')" style="cursor:pointer"` : ""}>
-      <div class="tx-icon" style="background:${cat.color}22;color:${cat.color}">${cat.emoji}</div>
+      <div class="tx-icon" style="background:${cat.color}22;color:${cat.color}">${icon(cat.icon)}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:.875rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.note || cat.name}</div>
         <div style="font-size:.75rem;color:var(--dim)">${cat.name} · ${Utils.fmtDateHuman(t.date)}</div>
@@ -2347,7 +2421,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <div>
             <span class="label">Meta Principal</span>
-            <div style="font-size:1rem;font-weight:700">🎯 ${goal.name}</div>
+            <div style="font-size:1rem;font-weight:700">${icon("bullseye", "icon-sm")} ${goal.name}</div>
           </div>
           <div style="text-align:right">
             <div style="font-size:.75rem;color:var(--dim)">${daysLeft > 0 ? daysLeft + " días restantes" : "Vencida"}</div>
@@ -2377,10 +2451,10 @@
         </div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary" onclick="openGenerarExtraModal()" style="flex-shrink:0">
-            🚀 Generar Extra
+            ${icon("rocket")} Generar Extra
           </button>
           <button class="btn btn-ghost" onclick="openTransactionModal(null, 'income', 'cat_adelanto')" style="flex-shrink:0;border-color:var(--red);color:var(--red)">
-            💸 Solicitar Adelanto
+            ${icon("money-bill-wave")} Solicitar Adelanto
           </button>
         </div>
       </div>
@@ -2400,7 +2474,11 @@
           <div class="label">Gasté hoy</div>
           <div class="mono" style="font-size:1.1rem;font-weight:700;color:${todaySpent > dailyBudget ? "#ef4444" : "var(--text)"}">${Utils.fmtPYG(todaySpent)}</div>
           <div style="font-size:.75rem;color:${todaySpent > dailyBudget ? "#ef4444" : "var(--dim)"}">
-            ${todaySpent > dailyBudget ? "⚠️ Superaste el límite" : "Dentro del presupuesto ✓"}
+            ${
+              todaySpent > dailyBudget
+                ? `${icon("triangle-exclamation", "icon-sm")} Superaste el límite`
+                : `${icon("circle-check", "icon-sm")} Dentro del presupuesto`
+            }
           </div>
         </div>
         <div class="stat-card">
@@ -2429,12 +2507,12 @@
           <button class="btn btn-ghost btn-sm" onclick="navigate('transactions')">Ver todas →</button>
         </div>
         <div>
-          ${recent.map((t) => renderTxItem(t)).join("") || '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">Sin transacciones</div></div>'}
+          ${recent.map((t) => renderTxItem(t)).join("") || `<div class="empty-state"><div class="empty-state-icon">${icon("inbox")}</div><div class="empty-state-text">Sin transacciones</div></div>`}
         </div>
       </div>
 
       <div class="card">
-        <div style="font-size:.85rem;font-weight:600;margin-bottom:12px">📊 Comparativas</div>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:12px">${icon("chart-column", "icon-sm")} Comparativas</div>
         <div class="two-col">
           ${renderComparativa(monthData.expense, lastMonthData.expense, "Gastos")}
           ${renderComparativa(monthData.income, lastMonthData.income, "Ingresos", true)}
@@ -2618,7 +2696,7 @@
           </select>
           <select class="input" style="width:150px" onchange="setTxFilter('categoryId',this.value)">
             <option value="">Todas las categ.</option>
-            ${state.categories.map((c) => `<option value="${c.id}" ${txFilters.categoryId === c.id ? "selected" : ""}>${c.emoji} ${c.name}</option>`).join("")}
+            ${state.categories.map((c) => `<option value="${c.id}" ${txFilters.categoryId === c.id ? "selected" : ""}>${c.name}</option>`).join("")}
           </select>
           <select class="input" style="width:130px" onchange="setTxFilter('month',this.value)">
             <option value="">Todos los meses</option>
@@ -2666,7 +2744,7 @@
         ${
           pageTx.length
             ? pageTx.map((t) => renderTxItem(t)).join("")
-            : '<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">Sin resultados</div><div class="empty-state-text">Intenta con otros filtros</div></div>'
+            : `<div class="empty-state"><div class="empty-state-icon">${icon("magnifying-glass")}</div><div class="empty-state-title">Sin resultados</div><div class="empty-state-text">Intenta con otros filtros</div></div>`
         }
       </div>
       ${
@@ -2737,7 +2815,7 @@
           .filter((c) => c.type === type || c.type === "both")
           .map(
             (c) =>
-              `<option value="${c.id}" ${tx?.categoryId === c.id || (!tx && defaultCatId === c.id) ? "selected" : ""}>${c.emoji} ${c.name}</option>`,
+              `<option value="${c.id}" ${tx?.categoryId === c.id || (!tx && defaultCatId === c.id) ? "selected" : ""}>${c.name}</option>`,
           )
           .join("");
         const selCat = tx
@@ -2763,8 +2841,8 @@
         <div>
           <span class="label">Tipo</span>
           <div class="tab-bar" style="max-width:240px">
-            <button class="tab-btn ${type === "income" ? "active" : ""}" onclick="switchTxType('income')" id="tab-income">💚 Ingreso</button>
-            <button class="tab-btn ${type === "expense" ? "active" : ""}" onclick="switchTxType('expense')" id="tab-expense">❤️ Gasto</button>
+            <button class="tab-btn ${type === "income" ? "active" : ""}" onclick="switchTxType('income')" id="tab-income">${icon("arrow-up")} Ingreso</button>
+            <button class="tab-btn ${type === "expense" ? "active" : ""}" onclick="switchTxType('expense')" id="tab-expense">${icon("arrow-down")} Gasto</button>
           </div>
           <input type="hidden" id="modal-type" value="${type}">
           <input type="hidden" id="modal-id" value="${id || ""}">
@@ -2795,10 +2873,10 @@
         </div>
       </div>`,
           footer: `
-      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteTransaction('${id}')">🗑 Eliminar</button>` : ""}
+      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteTransaction('${id}')">${icon("trash")} Eliminar</button>` : ""}
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveTransaction()">💾 Guardar</button>`,
+      <button class="btn btn-primary" onclick="saveTransaction()">${icon("floppy-disk")} Guardar</button>`,
         });
       }
       function switchTxType(type) {
@@ -2814,7 +2892,7 @@
           '<option value="">Seleccionar categoría</option>' +
           state.categories
             .filter((c) => c.type === type || c.type === "both")
-            .map((c) => `<option value="${c.id}">${c.emoji} ${c.name}</option>`)
+            .map((c) => `<option value="${c.id}">${c.name}</option>`)
             .join("");
         updateSubcatOptions();
       }
@@ -2972,7 +3050,7 @@
                   );
                   return `
             <div class="tx-item" onclick="openTemplateModal('${tpl.id}')" style="cursor:pointer">
-              <div class="tx-icon" style="background:${cat?.color || "#94a3b8"}22;color:${cat?.color || "#94a3b8"}">${cat?.emoji || "📦"}</div>
+              <div class="tx-icon" style="background:${cat?.color || "#94a3b8"}22;color:${cat?.color || "#94a3b8"}">${icon(cat?.icon || DEFAULT_CATEGORY_ICON)}</div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:.875rem;font-weight:600">${tpl.note || cat?.name || "Sin nombre"}</div>
                 <div style="font-size:.75rem;color:var(--dim)">${Recurrence.getLabel(tpl.recurrence)} · Desde ${Utils.fmtDateHuman(tpl.startDate)}</div>
@@ -2988,11 +3066,11 @@
             </div>`;
                 })
                 .join("")
-            : '<div class="empty-state"><div class="empty-state-icon">🔄</div><div class="empty-state-title">Sin plantillas</div><div class="empty-state-text">Agrega ingresos y gastos recurrentes</div></div>'
+            : `<div class="empty-state"><div class="empty-state-icon">${icon("repeat")}</div><div class="empty-state-title">Sin plantillas</div><div class="empty-state-text">Agrega ingresos y gastos recurrentes</div></div>`
         }
       </div>
       <div class="card">
-        <div style="font-size:.85rem;font-weight:600;margin-bottom:14px">📅 Próximas ocurrencias (30 días)</div>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:14px">${icon("calendar-days", "icon-sm")} Próximas ocurrencias (30 días)</div>
         ${
           upcoming.length
             ? upcoming
@@ -3001,7 +3079,7 @@
           <div class="proj-row">
             <div class="proj-date">${Utils.fmtDateHuman(date)}</div>
             <div class="proj-event">
-              <span>${cat?.emoji || "📦"}</span>${tpl.note || cat?.name || ""}
+              ${icon(cat?.icon || DEFAULT_CATEGORY_ICON, "icon-sm")} ${tpl.note || cat?.name || ""}
               <span class="badge badge-gray">${Recurrence.getLabel(tpl.recurrence)}</span>
             </div>
             <div class="proj-amount" style="color:${tpl.type === "income" ? "var(--green)" : "var(--red)"}">
@@ -3027,9 +3105,9 @@
           <span class="label">Tipo</span>
           <div class="tab-bar" style="max-width:240px">
             <button class="tab-btn ${(tpl?.type || "expense") === "income" ? "active" : ""}" id="tpl-tab-income"
-              onclick="this.parentNode.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');document.getElementById('tpl-type').value='income'">💚 Ingreso</button>
+              onclick="this.parentNode.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');document.getElementById('tpl-type').value='income'">${icon("arrow-up")} Ingreso</button>
             <button class="tab-btn ${(tpl?.type || "expense") === "expense" ? "active" : ""}" id="tpl-tab-expense"
-              onclick="this.parentNode.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');document.getElementById('tpl-type').value='expense'">❤️ Gasto</button>
+              onclick="this.parentNode.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');document.getElementById('tpl-type').value='expense'">${icon("arrow-down")} Gasto</button>
           </div>
           <input type="hidden" id="tpl-type" value="${tpl?.type || "expense"}">
           <input type="hidden" id="tpl-id" value="${id || ""}">
@@ -3042,7 +3120,7 @@
           <span class="label">Categoría</span>
           <select class="input" id="tpl-cat">
             <option value="">Seleccionar...</option>
-            ${state.categories.map((c) => `<option value="${c.id}" ${tpl?.categoryId === c.id ? "selected" : ""}>${c.emoji} ${c.name}</option>`).join("")}
+            ${state.categories.map((c) => `<option value="${c.id}" ${tpl?.categoryId === c.id ? "selected" : ""}>${c.name}</option>`).join("")}
           </select>
         </div>
         <div>
@@ -3088,10 +3166,10 @@
         </label>
       </div>`,
           footer: `
-      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteTemplate('${id}')">🗑 Eliminar</button>` : ""}
+      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteTemplate('${id}')">${icon("trash")} Eliminar</button>` : ""}
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveTemplate()">💾 Guardar</button>`,
+      <button class="btn btn-primary" onclick="saveTemplate()">${icon("floppy-disk")} Guardar</button>`,
         });
       }
       function updateRecurrenceFields() {
@@ -3205,27 +3283,29 @@
         "#f472b6",
         "#94a3b8",
       ];
-      const CAT_EMOJIS = [
-        "💼",
-        "💰",
-        "🛒",
-        "🏠",
-        "🚌",
-        "⚡",
-        "🏥",
-        "📚",
-        "🎮",
-        "👕",
-        "💳",
-        "🐜",
-        "📈",
-        "🐷",
-        "📦",
-        "🍽️",
-        "☕",
-        "🚗",
-        "✈️",
-        "🎁",
+      const CAT_ICONS = [
+        "briefcase",
+        "laptop",
+        "chart-line",
+        "coins",
+        "cart-shopping",
+        "bus",
+        "house",
+        "heart",
+        "bolt",
+        "credit-card",
+        "bug",
+        "book",
+        "gamepad",
+        "shirt",
+        "piggy-bank",
+        "box",
+        "utensils",
+        "car",
+        "gift",
+        "wallet",
+        "plane",
+        "money-bill-wave",
       ];
 
       function renderCategories() {
@@ -3239,7 +3319,7 @@
             .map(
               (cat) => `
       <div class="tx-item" onclick="openCategoryModal('${cat.id}')" style="cursor:pointer">
-        <div style="width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:${cat.color}22;flex-shrink:0">${cat.emoji}</div>
+        <div style="width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:${cat.color}22;flex-shrink:0">${icon(cat.icon)}</div>
         <div style="flex:1">
           <div style="font-size:.875rem;font-weight:600">${cat.name}</div>
           <div style="font-size:.75rem;color:var(--dim)">${cat.subcategories?.length || 0} subcategorías · ${state.transactions.filter((t) => t.categoryId === cat.id).length} transacciones</div>
@@ -3257,17 +3337,17 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:16px">
         <div class="card" style="padding:0;overflow:hidden">
-          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--green)">💚 Ingresos</div>
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--green)">${icon("arrow-up", "icon-sm")} Ingresos</div>
           ${catList(inc)}
         </div>
         <div class="card" style="padding:0;overflow:hidden">
-          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--red)">❤️ Gastos</div>
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--red)">${icon("arrow-down", "icon-sm")} Gastos</div>
           ${catList(exp)}
         </div>
         ${
           both.length
             ? `<div class="card" style="padding:0;overflow:hidden">
-          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--muted)">📦 Ambos</div>
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--muted)">${icon("box", "icon-sm")} Ambos</div>
           ${catList(both)}</div>`
             : ""
         }
@@ -3294,11 +3374,11 @@
           </select>
         </div>
         <div>
-          <span class="label">Emoji</span>
+          <span class="label">Icono</span>
           <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
-            ${CAT_EMOJIS.map((e) => `<button onclick="document.getElementById('cat-emoji').value='${e}';this.parentNode.querySelectorAll('button').forEach(b=>b.style.outline='');this.style.outline='2px solid var(--blue)'" style="font-size:1.2rem;padding:4px;border-radius:6px;border:none;cursor:pointer;background:${cat?.emoji === e ? "var(--surface)" : "transparent"};outline:${cat?.emoji === e ? "2px solid var(--blue)" : "none"}">${e}</button>`).join("")}
+            ${CAT_ICONS.map((e) => `<button title="${e}" onclick="document.getElementById('cat-icon').value='${e}';this.parentNode.querySelectorAll('button').forEach(b=>b.style.outline='');this.style.outline='2px solid var(--blue)'" style="font-size:1.2rem;padding:4px;border-radius:6px;border:none;cursor:pointer;background:${cat?.icon === e ? "var(--surface)" : "transparent"};outline:${cat?.icon === e ? "2px solid var(--blue)" : "none"}">${icon(e)}</button>`).join("")}
           </div>
-          <input type="text" class="input" id="cat-emoji" value="${cat?.emoji || "📦"}" style="width:80px">
+          <input type="text" class="input" id="cat-icon" value="${cat?.icon || DEFAULT_CATEGORY_ICON}" style="width:140px">
         </div>
         <div>
           <span class="label">Color</span>
@@ -3313,7 +3393,7 @@
         </div>
       </div>`,
           footer: `
-      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteCategory('${id}')">🗑</button>` : ""}
+      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteCategory('${id}')">${icon("trash")}</button>` : ""}
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="saveCategory()">Guardar</button>`,
@@ -3323,8 +3403,9 @@
         const id = document.getElementById("cat-id")?.value;
         const name = document.getElementById("cat-name")?.value?.trim();
         const type = document.getElementById("cat-type")?.value;
-        const emoji =
-          document.getElementById("cat-emoji")?.value?.trim() || "📦";
+        const icon =
+          document.getElementById("cat-icon")?.value?.trim() ||
+          DEFAULT_CATEGORY_ICON;
         const color = document.getElementById("cat-color")?.value || "#94a3b8";
         const subs = (document.getElementById("cat-subs")?.value || "")
           .split("\n")
@@ -3344,7 +3425,7 @@
               ...state.categories[idx],
               name,
               type,
-              emoji,
+              icon,
               color,
               subcategories: subs,
             };
@@ -3353,7 +3434,7 @@
             id: "cat_" + Utils.uuid().substring(0, 8),
             name,
             type,
-            emoji,
+            icon,
             color,
             subcategories: subs,
           });
@@ -3408,7 +3489,7 @@
               <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
                 <div>
                   <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-                    <span style="font-weight:700">🎯 ${g.name}</span>
+                    <span style="font-weight:700">${icon("bullseye", "icon-sm")} ${g.name}</span>
                     ${g.isPrimary ? '<span class="badge badge-blue">Principal</span>' : ""}
                   </div>
                   <div style="font-size:.8rem;color:var(--dim)">${g.notes || ""}</div>
@@ -3444,7 +3525,7 @@
             </div>`;
                 })
                 .join("")
-            : '<div class="empty-state"><div class="empty-state-icon">🎯</div><div class="empty-state-title">Sin metas</div><div class="empty-state-text">Define tus objetivos financieros</div></div>'
+            : `<div class="empty-state"><div class="empty-state-icon">${icon("bullseye")}</div><div class="empty-state-title">Sin metas</div><div class="empty-state-text">Define tus objetivos financieros</div></div>`
         }
       </div>
     </div>`;
@@ -3471,10 +3552,10 @@
         </label>
       </div>`,
           footer: `
-      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteGoal('${id}')">🗑 Eliminar</button>` : ""}
+      ${id ? `<button class="btn btn-danger btn-sm" onclick="deleteGoal('${id}')">${icon("trash")} Eliminar</button>` : ""}
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveGoal()">💾 Guardar</button>`,
+      <button class="btn btn-primary" onclick="saveGoal()">${icon("floppy-disk")} Guardar</button>`,
         });
       }
       function saveGoal() {
@@ -3597,7 +3678,7 @@
         </div>
       </div>
       <div class="card" style="margin-bottom:16px">
-        <div style="font-size:.85rem;font-weight:600;margin-bottom:12px">🐜 Top 10 gastos pequeños del mes</div>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:12px">${icon("bug", "icon-sm")} Top 10 gastos pequeños del mes</div>
         ${
           sortedSmall.length
             ? sortedSmall
@@ -3608,7 +3689,7 @@
                   return `
             <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
               <div style="width:22px;text-align:center;font-size:.75rem;color:var(--dim);font-weight:700">#${i + 1}</div>
-              <div style="font-size:1rem">${cat?.emoji || "📦"}</div>
+              <div style="font-size:1rem">${icon(cat?.icon || DEFAULT_CATEGORY_ICON, "icon-sm")}</div>
               <div style="flex:1;font-size:.875rem">${t.note || cat?.name || "Sin nota"}</div>
               <div style="font-size:.75rem;color:var(--dim)">${Utils.fmtDateHuman(t.date)}</div>
               <div class="mono" style="color:var(--red);font-weight:700;font-size:.875rem">${Utils.fmtPYG(t.amount)}</div>
@@ -3619,7 +3700,7 @@
         }
       </div>
       <div class="card">
-        <div style="font-size:.85rem;font-weight:600;margin-bottom:12px">📅 Proyección próximos 30 días</div>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:12px">${icon("calendar-days", "icon-sm")} Proyección próximos 30 días</div>
         <div id="projection-table">${renderProjectionTable()}</div>
       </div>
     </div>`;
@@ -3693,7 +3774,7 @@
             const cat = state.categories.find((c) => c.id === catId) || {
               name: "Otros",
               color: "#94a3b8",
-              emoji: "📦",
+              icon: DEFAULT_CATEGORY_ICON,
             };
             const total = Utils.sumBy(txs, (t) => t.amount);
             labels.push(cat.name);
@@ -3855,7 +3936,7 @@
         const dailyRed = daysToEom > 0 ? Math.ceil(extraMonth / daysToEom) : 0;
         const dailyBudget = calcDailyBudget();
         openModal({
-          title: "🚀 Calculadora de Extras",
+          title: `${icon("rocket", "icon-sm")} Calculadora de Extras`,
           body: `
       <div style="display:flex;flex-direction:column;gap:16px">
         <div class="highlight-banner">
@@ -3864,7 +3945,7 @@
           <div style="font-size:.8rem;color:var(--dim);margin-top:4px">${daysLeft} días para ${Utils.fmtDateHuman(goal.targetDate)}</div>
         </div>
         <div style="background:rgba(255,255,255,.04);border-radius:var(--radius-sm);padding:16px">
-          <div style="font-size:.85rem;font-weight:600;margin-bottom:12px;color:var(--green)">💡 Opciones para lograrlo:</div>
+          <div style="font-size:.85rem;font-weight:600;margin-bottom:12px;color:var(--green)">${icon("lightbulb", "icon-sm")} Opciones para lograrlo:</div>
           <div style="display:flex;flex-direction:column;gap:10px">
             <div style="padding:12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--green)">
               <div style="font-size:.8rem;color:var(--dim)">Opción 1: Generar ingresos extra</div>
@@ -3884,7 +3965,7 @@
             </div>
           </div>
         </div>
-        <div style="font-size:.8rem;color:var(--dim);text-align:center">💡 Registra tus ingresos extras al recibirlos para actualizar el progreso</div>
+        <div style="font-size:.8rem;color:var(--dim);text-align:center">${icon("lightbulb", "icon-sm")} Registra tus ingresos extras al recibirlos para actualizar el progreso</div>
       </div>`,
           footer: `
       <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>
@@ -3896,7 +3977,7 @@
       function renderSettings() {
         document.getElementById("section-settings").innerHTML = `
     <div style="padding:20px;max-width:700px;margin:0 auto">
-      <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:20px">⚙️ Configuración</h2>
+      <h2 style="font-size:1.25rem;font-weight:700;margin-bottom:20px">${icon("gear", "icon-sm")} Configuración</h2>
       <div class="card" style="margin-bottom:16px">
         <div style="font-size:.85rem;font-weight:600;margin-bottom:14px">Preferencias</div>
         <div style="display:flex;flex-direction:column;gap:14px">
@@ -3934,7 +4015,7 @@
         </div>
       </div>
       <div class="card" style="margin-bottom:16px">
-        <div style="font-size:.85rem;font-weight:600;margin-bottom:14px">📊 Resumen</div>
+        <div style="font-size:.85rem;font-weight:600;margin-bottom:14px">${icon("chart-pie", "icon-sm")} Resumen</div>
         <div class="three-col">
           <div style="text-align:center;padding:12px;background:rgba(255,255,255,.04);border-radius:8px">
             <div class="mono" style="font-size:1.5rem;font-weight:700;color:var(--blue)">${state.transactions.length}</div>
@@ -3951,15 +4032,15 @@
         </div>
       </div>
       <div class="card" style="border-color:rgba(239,68,68,.25)">
-        <div style="font-size:.85rem;font-weight:600;color:var(--red);margin-bottom:12px">⚠️ Zona Peligrosa</div>
+        <div style="font-size:.85rem;font-weight:600;color:var(--red);margin-bottom:12px">${icon("triangle-exclamation", "icon-sm")} Zona Peligrosa</div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:rgba(239,68,68,.05);border-radius:8px">
           <div><div style="font-weight:500;font-size:.875rem">Resetear aplicación</div><div style="font-size:.75rem;color:var(--dim)">Elimina TODOS los datos permanentemente</div></div>
-          <button class="btn btn-danger btn-sm" onclick="resetApp()">🗑️ Resetear</button>
+          <button class="btn btn-danger btn-sm" onclick="resetApp()">${icon("trash")} Resetear</button>
         </div>
       </div>
       <div style="text-align:center;margin-top:24px;color:var(--dim);font-size:.75rem">
-        <div>💰 EFECTIVO v${state.config.version}</div>
-        <div style="margin-top:4px">Control total de finanzas en Paraguay • Hecho con ❤️</div>
+        <div>${icon("wallet", "icon-sm")} EFECTIVO v${state.config.version}</div>
+        <div style="margin-top:4px">Control total de finanzas en Paraguay • Hecho con ${icon("heart", "icon-sm")}</div>
       </div>
     </div>`;
       }
@@ -4014,9 +4095,7 @@
       }
       function resetApp() {
         if (
-          !confirm(
-            "⚠️ ¿Seguro? Se eliminarán TODOS los datos permanentemente.",
-          ) ||
+          !confirm("¿Seguro? Se eliminarán TODOS los datos permanentemente.") ||
           !confirm(
             "Confirma que quieres borrar todo. No se restaurarán los datos de ejemplo.",
           )
